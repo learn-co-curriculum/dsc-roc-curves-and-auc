@@ -1,12 +1,19 @@
 
-# AUC and ROC
-
-Some of our accuracy scores thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What we have to keep in mind is that when predicting a binary classification, we are bound to be right sometimes, even just by guessing. For example, I should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues tuning models down the road. If you have a skewed datasets with rare events (such as a disease or winning the lottery) where there is only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context.
+# ROC Curves and AUC 
 
 
-With that, another way to analyze classification errors is with AUC, which stands for 'area under curve'. 
+## Introduction 
 
-What curve you ask? The Receiver Operater Curve (ROC Curve) which illustrates the false positive against false negative rate of our classifier. When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
+This lesson will introduce ROC: Receiver Operating Characteristic curves and AUC: Area Under [the] Curve.
+
+Some of our accuracy scores thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What we have to keep in mind is that when predicting a binary classification, we are bound to be right sometimes, even just by random guessing. For example, I should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues when tuning models down the road. If you have a skewed dataset with rare events (such as a disease or winning the lottery) where there is only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context. AUC is an alternative comprehensive metric to confusion matrices, which we previously examined, and ROC graphs allow us to determine optimal precision-recall tradeoff balances specific to the specific problem we are looking to solve.
+
+## Objectives
+
+* Evaluate classification models using various metrics
+* Define and understand ROC and AUC
+
+The Receiver Operater Characteristic curve (ROC curve) which illustrates the false positive against false negative rate of our classifier. When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
 ![](./images/roc_comp.jpg)
 
@@ -62,6 +69,141 @@ y_hat_test = logreg.predict(X_test)
 df.head()
 ```
 
+    LogisticRegression(C=1000000000000.0, class_weight=None, dual=False,
+              fit_intercept=False, intercept_scaling=1, max_iter=100,
+              multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
+              solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>sex</th>
+      <th>cp</th>
+      <th>trestbps</th>
+      <th>chol</th>
+      <th>fbs</th>
+      <th>restecg</th>
+      <th>thalach</th>
+      <th>exang</th>
+      <th>oldpeak</th>
+      <th>slope</th>
+      <th>ca</th>
+      <th>thal</th>
+      <th>target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.708333</td>
+      <td>1.0</td>
+      <td>1.000000</td>
+      <td>0.481132</td>
+      <td>0.244292</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.603053</td>
+      <td>0.0</td>
+      <td>0.370968</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.166667</td>
+      <td>1.0</td>
+      <td>0.666667</td>
+      <td>0.339623</td>
+      <td>0.283105</td>
+      <td>0.0</td>
+      <td>0.5</td>
+      <td>0.885496</td>
+      <td>0.0</td>
+      <td>0.564516</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.250000</td>
+      <td>0.0</td>
+      <td>0.333333</td>
+      <td>0.339623</td>
+      <td>0.178082</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.770992</td>
+      <td>0.0</td>
+      <td>0.225806</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.562500</td>
+      <td>1.0</td>
+      <td>0.333333</td>
+      <td>0.245283</td>
+      <td>0.251142</td>
+      <td>0.0</td>
+      <td>0.5</td>
+      <td>0.816794</td>
+      <td>0.0</td>
+      <td>0.129032</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.583333</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.245283</td>
+      <td>0.520548</td>
+      <td>0.0</td>
+      <td>0.5</td>
+      <td>0.702290</td>
+      <td>1.0</td>
+      <td>0.096774</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 ## Drawing the ROC Curve
   
 In practice, a good way to implement AUC and ROC is via sklearn's  built in methods:
@@ -88,6 +230,9 @@ From there we can easily calculate the AUC:
 ```python
 print('AUC: {}'.format(auc(fpr, tpr)))
 ```
+
+    AUC: 0.8738548273431994
+
 
 ### Putting it all together as a cohesive visual:
 
@@ -117,26 +262,13 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
-## Interpretation
-Think about the scenario we've been describing thus far; predicting heart disease. If you tune the current model to have and 80% True Positive Rate, (you've still missed 20% of those with heart disease), what is the False positive rate?
+    AUC: 0.8738548273431994
 
 
-```python
-fp = #write the approximate fpr when tpr=.8
-```
 
-## Interpretation 2
-If you instead tune the model to have a 95% True Postive Rate, what will the False Postive Rate be?
+![png](index_files/index_12_1.png)
 
 
-```python
-fp = #write the approximate fpr when tpr=.95
-```
+## Summary
 
-## Opinion
-In the case of heart disease that we've been talking about, do you find any of the above cases acceptable? How would you tune the model. Describe what this would mean in terms of the number of patients falsely scared of having heart disease and the risk of missing the warning signs for those who do actually have heart disease.
-
-
-```python
-#Your answer here.
-```
+In this lesson, we investigated another evaluation for classification algorithms (including logistic regression). Namely, we looked at Receiver Operating Characteristic curves (ROC) which graph the False Positive Rate against the True Positive Rate. The overall accuracy of a classifier can thus be quanitified by the AUC, the Area Under [this] Curve. Perfect classifiers would have an AUC score of 1.0 while and AUC of .5 is deemed trivial or worthless.
