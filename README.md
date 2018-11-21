@@ -10,8 +10,12 @@ Some of our accuracy scores thus far probably seem pretty impressive; an 80% acc
 
 ## Objectives
 
+You will be able to:
+
 * Evaluate classification models using various metrics
 * Define and understand ROC and AUC
+
+## The ROC curve
 
 The Receiver Operater Characteristic curve (ROC curve) which illustrates the false positive against false negative rate of our classifier. When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
@@ -34,7 +38,7 @@ Models with poor ROC might have large overlaps in the probability estimates for 
 
 With that, let's take a look at drawing the ROC curve in practice.
 
-# As before lets train an Classifier to Start
+## As before let's train a classifier to start
 
 
 ```python
@@ -234,7 +238,7 @@ print('AUC: {}'.format(auc(fpr, tpr)))
     AUC: 0.8738548273431994
 
 
-### Putting it all together as a cohesive visual:
+## Putting it all together as a cohesive visual
 
 
 ```python
