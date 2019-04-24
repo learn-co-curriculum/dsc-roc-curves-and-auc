@@ -6,7 +6,7 @@
 
 This lesson will introduce ROC: Receiver Operating Characteristic curves and AUC: Area Under [the] Curve.
 
-Some of our accuracy scores thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What we have to keep in mind is that when predicting a binary classification, we are bound to be right sometimes, even just by random guessing. For example, I should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues when tuning models down the road. If you have a skewed dataset with rare events (such as a disease or winning the lottery) where there is only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context. AUC is an alternative comprehensive metric to confusion matrices, which we previously examined, and ROC graphs allow us to determine optimal precision-recall tradeoff balances specific to the specific problem we are looking to solve.
+Some of the accuracy scores you've encountered thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What you have to keep in mind is that when predicting a binary classification, you are bound to be right sometimes, even just by random guessing. For example, a person should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues when tuning models down the road. If you have a skewed dataset with rare events (such as a disease or winning the lottery) where there are only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context. AUC is an alternative comprehensive metric to confusion matrices, which we previously examined, and ROC graphs allow us to determine optimal precision-recall tradeoff balances specific to the specific problem we are looking to solve.
 
 ## Objectives
 
@@ -17,7 +17,17 @@ You will be able to:
 
 ## The ROC curve
 
-The Receiver Operater Characteristic curve (ROC curve) which illustrates the false positive against false negative rate of our classifier. When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
+The Receiver Operator Characteristic curve (ROC curve) which illustrates the false positive rate against false negative rate of our classifier.
+
+You've already seen the True Positive Rate before, it's another name for recall! As a reminder, it's the ratio of the true positive predictions compared to all values that are actually positive. Mathematically, it is represented by:
+
+$$ \text{TPR} = \frac{\text{TP}}{\text{TP}+\text{FN}} $$
+
+False positive rate is the ratio of the false positive predictions compared to all values that are actually negative. Mathematically, it's represented as:
+
+$$ \text{PR} = \frac{\text{FP}}{\text{FP}+\text{TN}}$$
+
+When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
 ![](./images/roc_comp.jpg)
 
