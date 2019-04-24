@@ -6,14 +6,15 @@
 
 This lesson will introduce ROC: Receiver Operating Characteristic curves and AUC: Area Under [the] Curve.
 
-Some of the accuracy scores you've encountered thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What you have to keep in mind is that when predicting a binary classification, you are bound to be right sometimes, even just by random guessing. For example, a person should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues when tuning models down the road. If you have a skewed dataset with rare events (such as a disease or winning the lottery) where there are only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context. AUC is an alternative comprehensive metric to confusion matrices, which we previously examined, and ROC graphs allow us to determine optimal precision-recall tradeoff balances specific to the specific problem we are looking to solve.
+Some of the accuracy scores you've encountered thus far probably seem pretty impressive; an 80% accuracy seems pretty darn good on first try! What you have to keep in mind is that when predicting a binary classification, you are bound to be right sometimes, even just by random guessing. For example, a person should be roughly 50% accurate in guessing whether or not a coin lands on heads. This also can lead to issues when tuning models down the road. If you have a skewed dataset with rare events (such as a disease or winning the lottery) where there are only 2 positive cases in 1000, then even a trivial algorithm that classifies everything as 'not a member' will achieve an accuracy of 99.8% (998 out of 1000 times it was correct). So remember that an 80% accuracy must be taken into a larger context. AUC is an alternative comprehensive metric to confusion matrices, and ROC graphs allow us to determine optimal precision-recall tradeoff balances specific to the specific problem you are looking to solve.
 
 ## Objectives
 
 You will be able to:
 
 * Evaluate classification models using various metrics
-* Define and understand ROC and AUC
+* Define ROC and AUC
+* Explain how ROC and AUC are used to evaluate and choose models
 
 ## The ROC curve
 
@@ -27,7 +28,7 @@ False positive rate is the ratio of the false positive predictions compared to a
 
 $$ \text{PR} = \frac{\text{FP}}{\text{FP}+\text{TN}}$$
 
-When training a classifier, we are hoping the ROC curve will hug the upper left corner of our graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
+When training a classifier, the best performing models will have an ROC curve that hugs the upper left corner of the graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
 ![](./images/roc_comp.jpg)
 
@@ -37,10 +38,10 @@ Another perspective to help understand the ROC curve is to think about the under
 
 <img src="./images/decision_boundary_accuracy.png" alt="drawing" width="550px"/>
 
-Here we see the majority of the two classes probabilities land at around .25 or .75. If we alter the cutoff point, we can sacrifice precision, increasing the false positive rate in order to also increase the true positive rate, or vice versa. Imagine here green is the positive case 1 (in this case heart disease) and red the negative case 0. Shifting the decision boundary to the left from 0.5 will result in capturing more of the positive (1) cases. At the same time, we will also pick up some false negatives, those red cases at the far right of the negative (0) case distribution.
+Here you see the majority of the two classes probabilities land at around .25 or .75. If we alter the cutoff point, it could sacrifice precision, increasing the false positive rate in order to also increase the true positive rate, or vice versa. Imagine in this instance that green is the positive case 1 (in this case heart disease) and red the negative case 0. Shifting the decision boundary to the left from 0.5 will result in capturing more of the positive (1) cases. At the same time, it will pick up some false negatives, those red cases at the far right of the negative (0) case distribution.
 
 <img src="./images/decision_boundary_recall_preferred.png" alt="drawing" width="550px"/>
-Models with poor ROC might have large overlaps in the probability estimates for the two classes. This would indicate that the algorithm performed poorly and had difficulty seperating the two classes from each other.
+Models with poor ROC might have large overlaps in the probability estimates for the two classes. This would indicate that the algorithm performed poorly and had difficulty separating the two classes from each other.
 
 <img src="./images/poor_good_seperability.png" alt="drawing" width="400px"/>
 
@@ -65,8 +66,7 @@ X = df[df.columns[:-1]]
 y = df.target
 
 #Normalize the Data
-for col in df.columns:
-    df[col] = (df[col]-min(df[col]))/ (max(df[col]) - min(df[col]))
+X = X.apply(lambda x : (x - x.min()) /(x.max() - x.min()),axis=0)
 
 # Split the data into train and test sets.
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
@@ -129,88 +129,88 @@ df.head()
   <tbody>
     <tr>
       <th>0</th>
-      <td>0.708333</td>
-      <td>1.0</td>
-      <td>1.000000</td>
-      <td>0.481132</td>
-      <td>0.244292</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.603053</td>
-      <td>0.0</td>
-      <td>0.370968</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.333333</td>
-      <td>1.0</td>
+      <td>63</td>
+      <td>1</td>
+      <td>3</td>
+      <td>145</td>
+      <td>233</td>
+      <td>1</td>
+      <td>0</td>
+      <td>150</td>
+      <td>0</td>
+      <td>2.3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>0.166667</td>
-      <td>1.0</td>
-      <td>0.666667</td>
-      <td>0.339623</td>
-      <td>0.283105</td>
-      <td>0.0</td>
-      <td>0.5</td>
-      <td>0.885496</td>
-      <td>0.0</td>
-      <td>0.564516</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.666667</td>
-      <td>1.0</td>
+      <td>37</td>
+      <td>1</td>
+      <td>2</td>
+      <td>130</td>
+      <td>250</td>
+      <td>0</td>
+      <td>1</td>
+      <td>187</td>
+      <td>0</td>
+      <td>3.5</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.250000</td>
-      <td>0.0</td>
-      <td>0.333333</td>
-      <td>0.339623</td>
-      <td>0.178082</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.770992</td>
-      <td>0.0</td>
-      <td>0.225806</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.666667</td>
-      <td>1.0</td>
+      <td>41</td>
+      <td>0</td>
+      <td>1</td>
+      <td>130</td>
+      <td>204</td>
+      <td>0</td>
+      <td>0</td>
+      <td>172</td>
+      <td>0</td>
+      <td>1.4</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>0.562500</td>
-      <td>1.0</td>
-      <td>0.333333</td>
-      <td>0.245283</td>
-      <td>0.251142</td>
-      <td>0.0</td>
-      <td>0.5</td>
-      <td>0.816794</td>
-      <td>0.0</td>
-      <td>0.129032</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.666667</td>
-      <td>1.0</td>
+      <td>56</td>
+      <td>1</td>
+      <td>1</td>
+      <td>120</td>
+      <td>236</td>
+      <td>0</td>
+      <td>1</td>
+      <td>178</td>
+      <td>0</td>
+      <td>0.8</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.583333</td>
-      <td>0.0</td>
-      <td>0.000000</td>
-      <td>0.245283</td>
-      <td>0.520548</td>
-      <td>0.0</td>
-      <td>0.5</td>
-      <td>0.702290</td>
-      <td>1.0</td>
-      <td>0.096774</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.666667</td>
-      <td>1.0</td>
+      <td>57</td>
+      <td>0</td>
+      <td>0</td>
+      <td>120</td>
+      <td>354</td>
+      <td>0</td>
+      <td>1</td>
+      <td>163</td>
+      <td>1</td>
+      <td>0.6</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
     </tr>
   </tbody>
 </table>
@@ -238,14 +238,14 @@ y_score = logreg.fit(X_train, y_train).decision_function(X_test)
 fpr, tpr, thresholds = roc_curve(y_test, y_score)
 ```
 
-From there we can easily calculate the AUC:
+From there it's easy to calculate the AUC:
 
 
 ```python
 print('AUC: {}'.format(auc(fpr, tpr)))
 ```
 
-    AUC: 0.8738548273431994
+    AUC: 0.8823114869626498
 
 
 ## Putting it all together as a cohesive visual
@@ -276,7 +276,7 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
-    AUC: 0.8738548273431994
+    AUC: 0.8823114869626498
 
 
 
@@ -285,4 +285,4 @@ plt.show()
 
 ## Summary
 
-In this lesson, we investigated another evaluation for classification algorithms (including logistic regression). Namely, we looked at Receiver Operating Characteristic curves (ROC) which graph the False Positive Rate against the True Positive Rate. The overall accuracy of a classifier can thus be quanitified by the AUC, the Area Under [this] Curve. Perfect classifiers would have an AUC score of 1.0 while and AUC of .5 is deemed trivial or worthless.
+In this lesson, we investigated another evaluation for classification algorithms (including logistic regression). Namely, the Receiver Operating Characteristic curve (ROC) which graphs the False Positive Rate against the True Positive Rate. The overall accuracy of a classifier can thus be quantified by the AUC, the Area Under [this] Curve. Perfect classifiers would have an AUC score of 1.0 while and AUC of .5 is deemed trivial or worthless. Next, you're going to get more practice graphing the ROC and AUC curves and making interpretations based off of them.
