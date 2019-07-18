@@ -30,20 +30,20 @@ $$ \text{PR} = \frac{\text{FP}}{\text{FP}+\text{TN}}$$
 
 When training a classifier, the best performing models will have an ROC curve that hugs the upper left corner of the graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
-![](./images/roc_comp.jpg)
+<img src="./images/Image_144_ROC.png" width="400">
 
 The ROC curve gives us a graph of the tradeoff between this false positive and true positive rate. The AUC, or area under the curve, gives us a singular metric to compare these. An AUC of 1 being a perfect classifier, and an AUC of .5 being that which has a precision of 50%.
 
 Another perspective to help understand the ROC curve is to think about the underlying model fueling our classification algorithm. Remember that the logistic model produces probabilities that each observation is of a specific class. Imagine that the values produced from the logistic model look something like this:
 
-<img src="./images/decision_boundary_accuracy.png" alt="drawing" width="550px"/>
+<img src="./images/Image_145_accuracy.png" alt="drawing" width="400px"/>
 
 Here you see the majority of the two classes probabilities land at around .25 or .75. If we alter the cutoff point, it could sacrifice precision, increasing the false positive rate in order to also increase the true positive rate, or vice versa. Imagine in this instance that green is the positive case 1 (in this case heart disease) and red the negative case 0. Shifting the decision boundary to the left from 0.5 will result in capturing more of the positive (1) cases. At the same time, it will pick up some false negatives, those red cases at the far right of the negative (0) case distribution.
 
-<img src="./images/decision_boundary_recall_preferred.png" alt="drawing" width="550px"/>
+<img src="./images/Image_146_recall.png" alt="drawing" width="400px"/>
 Models with poor ROC might have large overlaps in the probability estimates for the two classes. This would indicate that the algorithm performed poorly and had difficulty separating the two classes from each other.
 
-<img src="./images/poor_good_seperability.png" alt="drawing" width="400px"/>
+<img src="./images/Image_147_separability.png" alt="drawing" width="400px"/>
 
 
 
