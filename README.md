@@ -18,7 +18,7 @@ You will be able to:
 
 ## The ROC curve
 
-The Receiver Operator Characteristic curve (ROC curve) which illustrates the false positive rate against false negative rate of our classifier.
+The Receiver Operator Characteristic curve (ROC curve) which illustrates the true positive rate against false positive rate of our classifier.
 
 You've already seen the True Positive Rate before, it's another name for recall! As a reminder, it's the ratio of the true positive predictions compared to all values that are actually positive. Mathematically, it is represented by:
 
@@ -26,7 +26,7 @@ $$ \text{TPR} = \frac{\text{TP}}{\text{TP}+\text{FN}} $$
 
 False positive rate is the ratio of the false positive predictions compared to all values that are actually negative. Mathematically, it's represented as:
 
-$$ \text{PR} = \frac{\text{FP}}{\text{FP}+\text{TN}}$$
+$$ \text{FPR} = \frac{\text{FP}}{\text{FP}+\text{TN}}$$
 
 When training a classifier, the best performing models will have an ROC curve that hugs the upper left corner of the graph. A classifier with 50-50 accuracy is deemed 'worthless'; this is no better then random guessing, as in the case of a coin flip.
 
@@ -38,7 +38,7 @@ Another perspective to help understand the ROC curve is to think about the under
 
 <img src="./images/Image_145_accuracy.png" alt="drawing" width="400px"/>
 
-Here you see the majority of the two classes probabilities land at around .25 or .75. If we alter the cutoff point, it could sacrifice precision, increasing the false positive rate in order to also increase the true positive rate, or vice versa. Imagine in this instance that green is the positive case 1 (in this case heart disease) and red the negative case 0. Shifting the decision boundary to the left from 0.5 will result in capturing more of the positive (1) cases. At the same time, it will pick up some false negatives, those red cases at the far right of the negative (0) case distribution.
+Here you see the majority of the two classes probabilities land at around .25 or .75. If we alter the cutoff point, it could sacrifice precision, increasing the false positive rate in order to also increase the true positive rate, or vice versa. Imagine in this instance that green is the positive case 1 (in this case heart disease) and red the negative case 0. Shifting the decision boundary to the left from 0.5 will result in capturing more of the positive (1) cases. At the same time, it will pick up some false positives, those red cases at the far right of the negative (0) case distribution that will be incorrectly identified as being part of the positive case distribution.
 
 <img src="./images/Image_146_recall.png" alt="drawing" width="400px"/>
 Models with poor ROC might have large overlaps in the probability estimates for the two classes. This would indicate that the algorithm performed poorly and had difficulty separating the two classes from each other.
